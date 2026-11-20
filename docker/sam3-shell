@@ -8,7 +8,7 @@ cd /workspace
 
 # `pixi shell-hook` exports the full RoboStack ROS 2 + PyTorch environment
 # without requiring an interactive shell. It reads pixi.toml from the cwd.
-eval "$(pixi shell-hook -e sam3)"
+eval "$(pixi shell-hook -e sam3-runtime)"
 
 # Overlay the packages built from this workspace (sam3_msgs, sam3_ros).
 # shellcheck disable=SC1091

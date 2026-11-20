@@ -48,6 +48,8 @@ rolling = { features = ["rolling", "build"] }
 # ROS 2 Jazzy + PyTorch + the official SAM3 package (installed from its Git repository).
 # This is the environment used to build, test and containerize this workspace.
 sam3 = { features = ["jazzy", "build", "sam3"], platforms = ["linux-64-cuda129"] }
+# Lean ROS 2 runtime used by docker/Dockerfile (ros-base, no desktop).
+sam3-runtime = { features = ["jazzy-runtime", "build", "sam3"], platforms = ["linux-64-cuda129"] }
 # Documentation site (Zensical). No ROS needed.
 docs = { features = ["docs"] }
 
@@ -58,6 +60,25 @@ channels = ["https://prefix.dev/robostack-noetic"]
 [feature.noetic.dependencies]
 ros-noetic-desktop = "*"
 catkin_tools = "*"
+
+### ROS Jazzy runtime (lean container image) ####
+# ros-base + only the packages this workspace imports. The `sam3` dev
+# environment keeps ros-desktop; the Docker image uses this lean feature.
+[feature.jazzy-runtime]
+channels = ["https://prefix.dev/robostack-jazzy"]
+
+[feature.jazzy-runtime.dependencies]
+ros-jazzy-ros-base = "*"
+ros-jazzy-ament-cmake = "*"
+ros-jazzy-launch = "*"
+ros-jazzy-launch-ros = "*"
+ros-jazzy-ros2launch = "*"
+ros-jazzy-cv-bridge = ">=4.1.0,<5"
+ros-jazzy-sensor-msgs = ">=5.3.8,<6"
+ros-jazzy-std-msgs = "*"
+ros-jazzy-rosidl-default-generators = "*"
+ros-jazzy-rosidl-default-runtime = "*"
+ros-jazzy-rmw-fastrtps-cpp = "*"
 
 ### ROS Humble ####
 [feature.humble]

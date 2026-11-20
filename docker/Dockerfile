@@ -53,14 +53,14 @@ WORKDIR /workspace
 
 # Dependency layer: only invalidated when pixi.toml / pixi.lock change.
 COPY pixi.toml pixi.lock ./
-RUN pixi install --locked -e sam3 \
+RUN pixi install --locked -e sam3-runtime \
     && rm -rf /opt/pixi/cache /root/.cache/rattler /root/.cache/uv
 
 # Workspace layer.
 COPY src ./src
 COPY examples ./examples
 COPY docker ./docker
-RUN pixi run --locked -e sam3 build \
+RUN pixi run --locked -e sam3-runtime build \
     && rm -rf build log
 
 RUN mkdir -p /models \
