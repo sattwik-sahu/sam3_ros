@@ -88,6 +88,8 @@ work the same way: change the environment, recreate the service.
 
 ## Notes
 
+* The image installs the lean `sam3-runtime` pixi environment (`ros-base`, `cv_bridge`, CUDA PyTorch, SAM 3) instead of the `sam3` desktop dev environment. This keeps the image smaller and avoids RViz/Gazebo.
+
 * `gpus: all` is set per node service; the download service needs no GPU.
 * `network_mode: host` lets host ROS 2 processes discover the container. Use the
   same `ROS_DOMAIN_ID`.

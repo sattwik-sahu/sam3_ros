@@ -36,7 +36,8 @@ inference path. `docs/agents.md` has the long version.
    Never add it (or other doc tooling) to the `sam3` environment.
 6. **Weights are not in the image.** They live in the `sam3-weights` volume
    (`/models`, `HF_HOME=/models/huggingface`).
-7. **Build without `--symlink-install`.** setuptools + colcon's prefix override
+7. **Container env is `sam3-runtime`.** The Docker image uses `ros-base`; the local dev env `sam3` keeps `ros-desktop`. Do not make the image depend on desktop-only packages.
+8. **Build without `--symlink-install`.** setuptools + colcon's prefix override
    breaks `setup.py develop --editable`; the pixi build task already omits it.
 
 ## Commands
