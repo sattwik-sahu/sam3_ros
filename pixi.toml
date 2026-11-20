@@ -1,0 +1,135 @@
+[workspace]
+name = "sam3_ros"
+description = "ROS2 wrapper for SAM3"
+channels = ["https://prefix.dev/conda-forge"]
+# RoboStack's macOS builds need macOS 14, pixi assumes 13 unless told otherwise
+platforms = [
+  "linux-64",
+  "linux-aarch64",
+  # Named CUDA-enabled variant of linux-64 used only by the GPU feature below.
+  { name = "linux-64-cuda129", platform = "linux-64", cuda = "12.9" },
+]
+
+[target.unix.activation]
+# For activation scripts, we use bash for Unix-like systems
+scripts = ["install/setup.bash"]
+
+[feature.build.target.unix.tasks]
+build = "colcon build --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DPython_FIND_VIRTUALENV=ONLY -DPython3_FIND_VIRTUALENV=ONLY"
+
+# Python is the only dependency shared by every environment (ROS and docs).
+[dependencies]
+python = "*"
+
+# Build toolchain, scoped to the ROS/colcon environments so the docs
+# environment stays free of ROS/compilers.
+[feature.build.dependencies]
+compilers = "*"
+cmake = "*"
+pkg-config = "*"
+make = "*"
+ninja = "*"
+rosdep = "*"
+colcon-common-extensions = "*"
+
+[feature.build.target.linux.dependencies]
+libgl-devel = "*"
+
+# Define all the different ROS environments
+# Each environment corresponds to a different ROS distribution
+# and can be activated using the `pixi run/shell -e <environment>` command.
+[environments]
+noetic = { features = ["noetic", "build"] }
+humble = { features = ["humble", "build"] }
+jazzy = { features = ["jazzy", "build"] }
+kilted = { features = ["kilted", "build"] }
+lyrical = { features = ["lyrical", "build"] }
+rolling = { features = ["rolling", "build"] }
+# ROS 2 Jazzy + PyTorch + the official SAM3 package (installed from its Git repository).
+# This is the environment used to build, test and containerize this workspace.
+sam3 = { features = ["jazzy", "build", "sam3"], platforms = ["linux-64-cuda129"] }
+# Documentation site (Zensical). No ROS needed.
+docs = { features = ["docs"] }
+
+### ROS Noetic ####
+[feature.noetic]
+channels = ["https://prefix.dev/robostack-noetic"]
+
+[feature.noetic.dependencies]
+ros-noetic-desktop = "*"
+catkin_tools = "*"
+
+### ROS Humble ####
+[feature.humble]
+channels = ["https://prefix.dev/robostack-humble"]
+
+[feature.humble.dependencies]
+ros-humble-desktop = "*"
+
+### ROS Jazzy ####
+[feature.jazzy]
+channels = ["https://prefix.dev/robostack-jazzy"]
+
+[feature.jazzy.dependencies]
+ros-jazzy-desktop = "*"
+ros-jazzy-cv-bridge = ">=4.1.0,<5"
+ros-jazzy-sensor-msgs = ">=5.3.8,<6"
+
+### ROS Kilted ####
+[feature.kilted]
+channels = ["https://prefix.dev/robostack-kilted"]
+
+[feature.kilted.dependencies]
+ros-kilted-desktop = "*"
+
+### ROS Lyrical ####
+[feature.lyrical]
+channels = ["https://prefix.dev/robostack-lyrical"]
+
+[feature.lyrical.dependencies]
+ros-lyrical-desktop = "*"
+
+### ROS Rolling ####
+[feature.rolling]
+channels = ["https://prefix.dev/robostack-rolling"]
+
+[feature.rolling.dependencies]
+ros2-desktop = "*"
+
+[feature.sam3]
+# CUDA PyTorch wheels and the SAM3 GPU stack are validated on linux-64. ARM
+# (Jetson) requires NVIDIA's own torch wheels, so it is intentionally excluded.
+# The named platform declares the CUDA virtual package so the solver can pick
+# the CUDA-enabled pytorch build. See [workspace].platforms.
+platforms = ["linux-64-cuda129"]
+
+[feature.sam3.dependencies]
+python = "3.12.*"
+numpy = ">=1.26,<2.4"
+# PyTorch from conda-forge (RoboStack's recommended source). `pytorch-gpu`
+# selects the CUDA build (pytorch-gpu is a small meta-package that pins
+# `pytorch=*cuda*`). PyPI CUDA wheels are ~2.5 GB each and slow to fetch in many
+# environments.
+pytorch-gpu = ">=2.7"
+torchvision = ">=0.22"
+triton = ">=3.5"
+
+[feature.sam3.pypi-dependencies]
+sam3 = { git = "https://github.com/facebookresearch/sam3.git", rev = "31cb7e624e4fe95301b1be1d4e809111593d2e45" }
+einops = ">=0.8"
+pycocotools = ">=2.0"
+
+# The upstream sam3 pyproject still pins numpy<2, but ROS 2 Jazzy (RoboStack) is
+# built against NumPy 2.  The SAM3 code itself is NumPy-2 compatible (cap-x does
+# exactly this), so relax only that transitive upper bound. The conda NumPy
+# version remains pinned by the ROS environment and compatible at runtime.
+[feature.sam3.pypi-options.dependency-overrides]
+numpy = ">=1.26,<2.4"
+
+# Documentation tooling lives only in the docs environment.
+[feature.docs.tasks]
+docs-build = "zensical build --clean"
+docs-serve = "zensical serve"
+
+[feature.docs.pypi-dependencies]
+zensical = ">=0.1.3"

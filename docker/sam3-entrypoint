@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Container entrypoint.
+#
+# Optional behaviour:
+#   SAM3_PREFETCH_WEIGHTS=1  warm the Hugging Face cache in the /models volume
+#                            before starting the node. Useful when you want the
+#                            long download to happen during `up` instead of on
+#                            the first request.
+set -euo pipefail
+
+if [[ "${SAM3_PREFETCH_WEIGHTS:-0}" == "1" ]]; then
+    echo "[sam3-entrypoint] prefetching SAM3 weights into ${HF_HOME:-/models/huggingface}"
+    /usr/local/bin/sam3-shell python -m sam3_ros.download_weights \
+        --repo-id "${SAM3_HF_REPO_ID:-facebook/sam3}" \
+        --filename "${SAM3_HF_FILENAME:-sam3.pt}"
+fi
+
+exec /usr/local/bin/sam3-shell "$@"

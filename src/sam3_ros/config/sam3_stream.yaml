@@ -1,0 +1,78 @@
+# SAM 3 streaming node configuration.
+#
+# The text prompt is fixed for the lifetime of the node. It is encoded once at
+# startup and the embedding is reused for every frame (see
+# inference.cache_text_embeddings).
+#
+# Nested YAML maps to dotted ROS parameter names, e.g. stream.image_topic.
+# Omitted keys keep the defaults declared in sam3_ros/parameters.py.
+
+/**:
+  ros__parameters:
+    use_sim_time: false
+
+    # ------------------------------------------------------------------ model
+    model:
+      # Absolute .pt path or directory. Empty + load_from_hf resolves the gated
+      # weights from the Hugging Face cache.
+      checkpoint_path: ""
+      device: "cuda"
+      eval_mode: true
+      load_from_hf: true
+      hf_repo_id: "facebook/sam3"
+      hf_filename: "sam3.pt"
+      hf_revision: ""
+      local_files_only: false
+      bpe_path: ""
+      compile: false
+      enable_segmentation: true
+      enable_inst_interactivity: false
+      allow_cpu_fallback: true
+
+    # -------------------------------------------------------------- inference
+    inference:
+      resolution: 1008
+      confidence_threshold: 0.5
+      precision: "bf16"
+      tf32: true
+      cudnn_benchmark: true
+      cache_text_embeddings: true
+      # With a single fixed prompt only one entry is ever used.
+      text_cache_size: 8
+      warmup: true
+      warmup_iterations: 1
+      # Overridden by the streaming node to stream.text_prompt.
+      warmup_prompt: "object"
+
+    # ----------------------------------------------------------------- stream
+    stream:
+      # Fixed prompt for every frame, e.g. "red mug", "person wearing a hat".
+      text_prompt: "object"
+
+      # Input RGB image topic. rgb8/bgr8/rgba8/bgra8/mono8 are accepted.
+      image_topic: "/camera/color/image_raw"
+
+      # Binary segmentation mask output: mono8 with values {0, 1}, exactly the
+      # same width/height as the input image, header copied from the input.
+      mask_topic: "/sam3/mask"
+
+      # Processing rate limiter. 0 = as fast as the GPU allows. Frames that
+      # arrive faster are dropped without reaching the GPU.
+      max_rate_hz: 0.0
+
+      # Queue between the ROS callback and the inference worker. Depth 1 means
+      # the newest frame is always the one processed.
+      queue_size: 1
+      # Drop the oldest frame on overflow instead of the newest one.
+      drop_stale_frames: true
+
+      # Input QoS. Cameras normally publish best_effort.
+      input_qos_reliability: "best_effort"
+      input_qos_depth: 5
+
+      # Output QoS. Reliable is the safe default for local consumers.
+      output_qos_reliability: "reliable"
+      output_qos_depth: 1
+
+      # Throughput/drop/latency statistics period. 0 disables logging.
+      stats_log_period_s: 30.0

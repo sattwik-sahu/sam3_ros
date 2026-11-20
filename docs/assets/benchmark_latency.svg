@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="380" viewBox="0 0 860 380">
+<rect width="860" height="380" fill="#f8fafc"/>
+<text x="70" y="26" font-family="DejaVu Sans, sans-serif" font-size="18" font-weight="700" fill="#0f172a">End-to-end segmentation latency</text>
+<text x="70" y="45" font-family="DejaVu Sans, sans-serif" font-size="12" fill="#64748b">NVIDIA RTX A4500 · torch 2.13.0 · CUDA 12.9 · bf16 autocast · 1008² encoder</text>
+<line x1="70" y1="58.0" x2="836" y2="58.0" stroke="#e2e8f0" stroke-width="1"/>
+<text x="60" y="62.0" text-anchor="end" font-family="DejaVu Sans, sans-serif" font-size="11" fill="#64748b">240</text>
+<line x1="70" y1="110.8" x2="836" y2="110.8" stroke="#e2e8f0" stroke-width="1"/>
+<text x="60" y="114.8" text-anchor="end" font-family="DejaVu Sans, sans-serif" font-size="11" fill="#64748b">220</text>
+<line x1="70" y1="163.6" x2="836" y2="163.6" stroke="#e2e8f0" stroke-width="1"/>
+<text x="60" y="167.6" text-anchor="end" font-family="DejaVu Sans, sans-serif" font-size="11" fill="#64748b">200</text>
+<line x1="70" y1="216.4" x2="836" y2="216.4" stroke="#e2e8f0" stroke-width="1"/>
+<text x="60" y="220.4" text-anchor="end" font-family="DejaVu Sans, sans-serif" font-size="11" fill="#64748b">180</text>
+<line x1="70" y1="269.2" x2="836" y2="269.2" stroke="#e2e8f0" stroke-width="1"/>
+<text x="60" y="273.2" text-anchor="end" font-family="DejaVu Sans, sans-serif" font-size="11" fill="#64748b">160</text>
+<line x1="70" y1="322.0" x2="836" y2="322.0" stroke="#e2e8f0" stroke-width="1"/>
+<text x="60" y="326.0" text-anchor="end" font-family="DejaVu Sans, sans-serif" font-size="11" fill="#64748b">140</text>
+<line x1="70.0" y1="58" x2="70.0" y2="322" stroke="#e2e8f0" stroke-width="1"/>
+<text x="70.0" y="340" text-anchor="start" font-family="DejaVu Sans, sans-serif" font-size="9.5" fill="#0f172a">320×240</text>
+<text x="70.0" y="353" text-anchor="start" font-family="DejaVu Sans, sans-serif" font-size="9" fill="#64748b">0.08 MP</text>
+<line x1="197.7" y1="58" x2="197.7" y2="322" stroke="#e2e8f0" stroke-width="1"/>
+<text x="197.7" y="340" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="9.5" fill="#0f172a">640×480</text>
+<text x="197.7" y="353" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="9" fill="#64748b">0.31 MP</text>
+<line x1="325.3" y1="58" x2="325.3" y2="322" stroke="#e2e8f0" stroke-width="1"/>
+<text x="325.3" y="340" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="9.5" fill="#0f172a">960×540</text>
+<text x="325.3" y="353" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="9" fill="#64748b">0.52 MP</text>
+<line x1="453.0" y1="58" x2="453.0" y2="322" stroke="#e2e8f0" stroke-width="1"/>
+<text x="453.0" y="340" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="9.5" fill="#0f172a">1280×720</text>
+<text x="453.0" y="353" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="9" fill="#64748b">0.92 MP</text>
+<line x1="580.7" y1="58" x2="580.7" y2="322" stroke="#e2e8f0" stroke-width="1"/>
+<text x="580.7" y="340" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="9.5" fill="#0f172a">1920×1080</text>
+<text x="580.7" y="353" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="9" fill="#64748b">2.07 MP</text>
+<line x1="708.3" y1="58" x2="708.3" y2="322" stroke="#e2e8f0" stroke-width="1"/>
+<text x="708.3" y="340" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="9.5" fill="#0f172a">2560×1440</text>
+<text x="708.3" y="353" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="9" fill="#64748b">3.69 MP</text>
+<line x1="836.0" y1="58" x2="836.0" y2="322" stroke="#e2e8f0" stroke-width="1"/>
+<text x="836.0" y="340" text-anchor="end" font-family="DejaVu Sans, sans-serif" font-size="9.5" fill="#0f172a">3840×2160</text>
+<text x="836.0" y="353" text-anchor="end" font-family="DejaVu Sans, sans-serif" font-size="9" fill="#64748b">8.29 MP</text>
+<text x="453.0" y="364" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="12" fill="#64748b">input resolution (ordered by pixel count)</text>
+<text x="18" y="190.0" transform="rotate(-90 18 190.0)" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="12" fill="#64748b">latency (ms)</text>
+<polyline points="70.0,261.0 197.7,257.4 325.3,257.7 453.0,252.5 580.7,236.5 708.3,219.6 836.0,164.2" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linejoin="round"/>
+<circle cx="70.0" cy="261.0" r="3.5" fill="#f8fafc" stroke="#16a34a" stroke-width="2"/>
+<circle cx="197.7" cy="257.4" r="3.5" fill="#f8fafc" stroke="#16a34a" stroke-width="2"/>
+<circle cx="325.3" cy="257.7" r="3.5" fill="#f8fafc" stroke="#16a34a" stroke-width="2"/>
+<circle cx="453.0" cy="252.5" r="3.5" fill="#f8fafc" stroke="#16a34a" stroke-width="2"/>
+<circle cx="580.7" cy="236.5" r="3.5" fill="#f8fafc" stroke="#16a34a" stroke-width="2"/>
+<circle cx="708.3" cy="219.6" r="3.5" fill="#f8fafc" stroke="#16a34a" stroke-width="2"/>
+<circle cx="836.0" cy="164.2" r="3.5" fill="#f8fafc" stroke="#16a34a" stroke-width="2"/>
+<line x1="646" y1="68" x2="670" y2="68" stroke="#16a34a" stroke-width="3"/>
+<text x="676" y="72" font-family="DejaVu Sans, sans-serif" font-size="12" fill="#0f172a">p50</text>
+<polyline points="70.0,253.7 197.7,255.5 325.3,253.4 453.0,248.6 580.7,233.9 708.3,214.1 836.0,157.4" fill="none" stroke="#ea580c" stroke-width="2.5" stroke-linejoin="round"/>
+<circle cx="70.0" cy="253.7" r="3.5" fill="#f8fafc" stroke="#ea580c" stroke-width="2"/>
+<circle cx="197.7" cy="255.5" r="3.5" fill="#f8fafc" stroke="#ea580c" stroke-width="2"/>
+<circle cx="325.3" cy="253.4" r="3.5" fill="#f8fafc" stroke="#ea580c" stroke-width="2"/>
+<circle cx="453.0" cy="248.6" r="3.5" fill="#f8fafc" stroke="#ea580c" stroke-width="2"/>
+<circle cx="580.7" cy="233.9" r="3.5" fill="#f8fafc" stroke="#ea580c" stroke-width="2"/>
+<circle cx="708.3" cy="214.1" r="3.5" fill="#f8fafc" stroke="#ea580c" stroke-width="2"/>
+<circle cx="836.0" cy="157.4" r="3.5" fill="#f8fafc" stroke="#ea580c" stroke-width="2"/>
+<line x1="646" y1="88" x2="670" y2="88" stroke="#ea580c" stroke-width="3"/>
+<text x="676" y="92" font-family="DejaVu Sans, sans-serif" font-size="12" fill="#0f172a">p95</text>
+</svg>

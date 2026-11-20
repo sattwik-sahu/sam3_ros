@@ -1,0 +1,139 @@
+# ---------------------------------------------------------------------------
+# Include-able Docker Compose fragment for the SAM 3 ROS 2 package.
+#
+# This file is *not* meant to be run directly as the main compose file. Include
+# it from your robot/app compose file and select one profile:
+#
+#   include:
+#     - path: compose.sam3.yaml
+#
+#   docker compose --profile server up -d sam3-server
+#   docker compose --profile stream up -d sam3-stream
+#   docker compose --profile weights run --rm sam3-download
+#
+# Services:
+#   sam3-server   request/response SegmentImage service (profile: server)
+#   sam3-stream   fixed-prompt image-topic segmentation (profile: stream)
+#   sam3-download one-shot weight prefetch into the volume (profile: weights)
+#
+# Everything can be overridden from the including file (see
+# compose.example.yaml) or from the environment:
+#   SAM3_IMAGE, SAM3_DEVICE, ROS_DOMAIN_ID, HF_TOKEN,
+#   SAM3_CONFIG_DIR, SAM3_WEIGHTS_VOLUME, SAM3_TEXT_PROMPT, SAM3_IMAGE_TOPIC,
+#   SAM3_GPUS, SAM3_NETWORK_MODE, SAM3_SHM_SIZE, SAM3_PREFETCH_WEIGHTS,
+#   SAM3_BUILD_CONTEXT, SAM3_DOCKERFILE.
+# ---------------------------------------------------------------------------
+
+x-sam3-common: &sam3-common
+  image: ${SAM3_IMAGE:-sam3-ros:jazzy}
+  build:
+    context: ${SAM3_BUILD_CONTEXT:-.}
+    dockerfile: ${SAM3_DOCKERFILE:-docker/Dockerfile}
+    args:
+      PIXI_VERSION: ${PIXI_VERSION:-0.84.2}
+      CUDA_VERSION: ${SAM3_CUDA_VERSION:-12.9}
+  init: true
+  shm_size: ${SAM3_SHM_SIZE:-2gb}
+  # Host networking makes DDS discovery with other host/robot containers
+  # trivial. Set SAM3_NETWORK_MODE=bridge to use an isolated network.
+  network_mode: ${SAM3_NETWORK_MODE:-host}
+  restart: unless-stopped
+  stop_grace_period: 30s
+  volumes:
+    # Persistent SAM 3 weights + Hugging Face cache. The explicit volume name
+    # keeps it stable across compose projects and prevents it from being
+    # recreated when the project directory is renamed.
+    - sam3-weights:/models
+    # Runtime-editable parameter files. Edit on the host, then
+    # `docker compose down` / `up` to apply.
+    - ${SAM3_CONFIG_DIR:-./src/sam3_ros/config}:/config:ro
+  environment:
+    HF_HOME: /models/huggingface
+    HF_TOKEN: ${HF_TOKEN:-}
+    SAM3_HF_REPO_ID: ${SAM3_HF_REPO_ID:-facebook/sam3}
+    SAM3_HF_FILENAME: ${SAM3_HF_FILENAME:-sam3.pt}
+    SAM3_PREFETCH_WEIGHTS: ${SAM3_PREFETCH_WEIGHTS:-0}
+    ROS_DOMAIN_ID: ${ROS_DOMAIN_ID:-0}
+    RMW_IMPLEMENTATION: ${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
+    RCUTILS_COLORIZED_OUTPUT: ${RCUTILS_COLORIZED_OUTPUT:-1}
+    PYTHONUNBUFFERED: "1"
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  # ------------------------------------------------------------------ server
+  sam3-server:
+    <<: *sam3-common
+    profiles: ["server"]
+    container_name: ${SAM3_SERVER_CONTAINER_NAME:-sam3-server}
+    # GPU access through the NVIDIA container toolkit. Override with e.g.
+    # SAM3_GPUS='"device=0"' to pin a single GPU.
+    gpus: ${SAM3_GPUS:-all}
+    command:
+      - ros2
+      - launch
+      - sam3_ros
+      - sam3_server.launch.py
+      - config_file:=/config/sam3_server.yaml
+      - device:=${SAM3_DEVICE:-cuda}
+      - log_level:=${SAM3_LOG_LEVEL:-info}
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - sam3-shell ros2 node list 2>/dev/null | grep -q sam3
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 900s
+
+  # ------------------------------------------------------------------ stream
+  sam3-stream:
+    <<: *sam3-common
+    profiles: ["stream"]
+    container_name: ${SAM3_STREAM_CONTAINER_NAME:-sam3-stream}
+    gpus: ${SAM3_GPUS:-all}
+    command:
+      - ros2
+      - launch
+      - sam3_ros
+      - sam3_stream.launch.py
+      - config_file:=/config/sam3_stream.yaml
+      - image_topic:=${SAM3_IMAGE_TOPIC:-}
+      - text_prompt:=${SAM3_TEXT_PROMPT:-}
+      - device:=${SAM3_DEVICE:-cuda}
+      - log_level:=${SAM3_LOG_LEVEL:-info}
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - sam3-shell ros2 node list 2>/dev/null | grep -q sam3
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 900s
+
+  # ---------------------------------------------------------------- prefetch
+  # Populates the sam3-weights volume once:
+  #   docker compose --profile weights run --rm sam3-download
+  sam3-download:
+    <<: *sam3-common
+    profiles: ["weights"]
+    container_name: ${SAM3_DOWNLOAD_CONTAINER_NAME:-sam3-download}
+    restart: "no"
+    healthcheck:
+      disable: true
+    command:
+      - python
+      - -m
+      - sam3_ros.download_weights
+      - --repo-id
+      - ${SAM3_HF_REPO_ID:-facebook/sam3}
+      - --filename
+      - ${SAM3_HF_FILENAME:-sam3.pt}
+      - --include-config
+
+volumes:
+  sam3-weights:
+    name: ${SAM3_WEIGHTS_VOLUME:-sam3-weights}

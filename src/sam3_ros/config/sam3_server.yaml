@@ -1,0 +1,90 @@
+# SAM 3 request/response server configuration.
+#
+# Every key below is declared by the node with a parameter descriptor, so
+# `ros2 param describe /sam3_server model.device` prints the same documentation
+# at runtime. Nested YAML maps to dotted ROS parameter names:
+#
+#   model:
+#     device: cuda        ->  model.device
+#
+# Nothing in this file is required: omitted keys keep the defaults declared in
+# sam3_ros/parameters.py. The values shown are the defaults.
+
+/**:
+  ros__parameters:
+    use_sim_time: false
+
+    # ------------------------------------------------------------------ model
+    model:
+      # Absolute path to a .pt checkpoint, or a directory containing
+      # model.hf_filename. When set, Hugging Face is not contacted.
+      checkpoint_path: ""
+
+      # Torch device. Use "cuda:1" for the second GPU or "cpu" for debugging.
+      device: "cuda"
+
+      # Evaluation mode (inference). Keep true.
+      eval_mode: true
+
+      # When checkpoint_path is empty, resolve/download the weights via
+      # Hugging Face. Requires access to the gated facebook/sam3 repository
+      # and an HF_TOKEN (or a prior `hf auth login`) on first use.
+      load_from_hf: true
+      hf_repo_id: "facebook/sam3"
+      hf_filename: "sam3.pt"
+      # Optional branch/tag/commit; empty = repository default branch.
+      hf_revision: ""
+
+      # Resolve from the local HF cache without any network access.
+      local_files_only: false
+
+      # Optional BPE vocabulary override. Empty uses the file shipped with the
+      # sam3 Python package.
+      bpe_path: ""
+
+      # torch.compile the model. Costs a slow first call; benchmark before use.
+      compile: false
+
+      # Required for masks. Disabling it makes the node unusable.
+      enable_segmentation: true
+
+      # Point/box interactivity is not used by the text-prompt API and costs
+      # extra GPU memory. Keep false.
+      enable_inst_interactivity: false
+
+      # Fall back to CPU instead of failing when CUDA is unavailable.
+      allow_cpu_fallback: true
+
+    # -------------------------------------------------------------- inference
+    inference:
+      # Square encoder resolution. 1008 matches the released weights.
+      resolution: 1008
+
+      # Default detection threshold in [0, 1]. Requests may override it.
+      confidence_threshold: 0.5
+
+      # Autocast precision: bf16 (Ampere+), fp16, or fp32.
+      precision: "bf16"
+
+      # TF32 + cuDNN autotuning. Large speedups on Ampere+ with negligible
+      # quality impact. Disable for bit-exact reproducibility studies.
+      tf32: true
+      cudnn_benchmark: true
+
+      # Cache text embeddings across requests (LRU of text_cache_size).
+      cache_text_embeddings: true
+      text_cache_size: 8
+
+      # Synthetic forward passes at startup to warm CUDA/cuDNN.
+      warmup: true
+      warmup_iterations: 1
+      warmup_prompt: "object"
+
+    # ----------------------------------------------------------------- server
+    server:
+      # Name of the SegmentImage service. Use "~/segment" to make it private to
+      # the node; a plain name lives in the node namespace.
+      service_name: "segment"
+
+      # How often to print aggregate request/latency statistics. 0 disables.
+      stats_log_period_s: 30.0

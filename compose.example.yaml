@@ -1,0 +1,47 @@
+# ---------------------------------------------------------------------------
+# Example MAIN compose file that includes compose.sam3.yaml.
+#
+# Copy/rename this file into your robot's compose project (or copy its
+# `include:` block into your existing compose file) and adjust the overrides.
+#
+# Start the request/response server:
+#   docker compose --profile server up -d --build sam3-server
+#
+# Start the streaming node (prompt from the environment or the YAML file):
+#   SAM3_TEXT_PROMPT="red mug" \
+#   SAM3_IMAGE_TOPIC=/camera/color/image_raw \
+#   docker compose --profile stream up -d --build sam3-stream
+#
+# Prefetch weights once (fast subsequent starts):
+#   docker compose --profile weights run --rm sam3-download
+#
+# Stop and apply edited YAML parameters:
+#   docker compose --profile server down
+#   docker compose --profile server up -d sam3-server
+# ---------------------------------------------------------------------------
+
+include:
+  - path: compose.sam3.yaml
+
+services:
+  # Example overrides applied on top of the included service definition.
+  # Compose merges mappings, so only the keys below are replaced.
+  sam3-stream:
+    environment:
+      ROS_DOMAIN_ID: "7"
+      HF_TOKEN: ${HF_TOKEN}
+    # Optional launch-argument overrides (these take precedence over the YAML):
+    # command:
+    #   - ros2
+    #   - launch
+    #   - sam3_ros
+    #   - sam3_stream.launch.py
+    #   - config_file:=/config/sam3_stream.yaml
+    #   - image_topic:=/camera/color/image_raw
+    #   - text_prompt:=person wearing a hat
+    #   - max_rate_hz:=5.0
+
+  sam3-server:
+    environment:
+      ROS_DOMAIN_ID: "7"
+      HF_TOKEN: ${HF_TOKEN}

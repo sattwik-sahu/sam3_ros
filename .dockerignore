@@ -1,0 +1,22 @@
+# Keep build context small and cache-friendly.
+.pixi
+build
+install
+log
+site
+docs
+scripts
+.git
+.gitignore
+.gitattributes
+.env
+.env.example
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/.pytest_cache
+**/*.egg-info
+compose*.yaml
+README.md
+AGENTS.md
+zensical.toml

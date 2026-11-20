@@ -1,0 +1,29 @@
+# Segment every instance of a free-form text prompt in an RGB image and return
+# a binary segmentation mask.
+#
+# This is the request side of the request/response SAM 3 server. The node
+# serializes GPU access, so concurrent requests are served one at a time.
+
+# Input image. Supported encodings: rgb8, bgr8, rgba8, bgra8 and mono8.
+# Other encodings are rejected with success=false.
+sensor_msgs/Image image
+
+# Free-form concept to segment, e.g. "red mug" or "person wearing a hat".
+string text_prompt
+
+# Confidence threshold in [0, 1] for this request only.
+# A negative value uses the node's configured default
+# (inference.confidence_threshold).
+float32 confidence_threshold
+---
+# Binary segmentation mask with exactly the same width and height as the input
+# image. Encoding: mono8, values {0 = background, 1 = foreground}. Pixels set
+# to 1 are the object(s) described by the prompt (union of all SAM 3 instances
+# above the confidence threshold).
+sensor_msgs/Image mask
+
+# True when inference completed successfully and `mask` is valid.
+bool success
+
+# Human-readable error description when success is false, empty otherwise.
+string message

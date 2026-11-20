@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Activate the pixi environment and the colcon workspace, then exec the command.
+#
+# Used as the shell for the container entrypoint and for compose healthchecks.
+set -euo pipefail
+
+cd /workspace
+
+# `pixi shell-hook` exports the full RoboStack ROS 2 + PyTorch environment
+# without requiring an interactive shell. It reads pixi.toml from the cwd.
+eval "$(pixi shell-hook -e sam3)"
+
+# Overlay the packages built from this workspace (sam3_msgs, sam3_ros).
+# shellcheck disable=SC1091
+source /workspace/install/setup.bash
+
+exec "$@"

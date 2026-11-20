@@ -1,0 +1,56 @@
+[
+  {
+    "name": "rellis_puddle",
+    "prompt": "puddle",
+    "dataset": "RELLIS-3D",
+    "image": "/mnt/toshiba_hdd/datasets/rellis-3d/images/00000/pylon_camera_node/frame000000-1581624652_750.jpg",
+    "width": 1920,
+    "height": 1200,
+    "foreground_pct": 6.59
+  },
+  {
+    "name": "deer",
+    "prompt": "deer",
+    "dataset": "IISERB Segmentor",
+    "image": "/mnt/toshiba_hdd/datasets/iiserb/segmentor/images/deer.jpg",
+    "width": 4302,
+    "height": 2472,
+    "foreground_pct": 17.61
+  },
+  {
+    "name": "elephant",
+    "prompt": "elephant",
+    "dataset": "IISERB Segmentor",
+    "image": "/mnt/toshiba_hdd/datasets/iiserb/segmentor/images/elephant.jpg",
+    "width": 3461,
+    "height": 2150,
+    "foreground_pct": 16.92
+  },
+  {
+    "name": "coral",
+    "prompt": "coral",
+    "dataset": "SUIM",
+    "image": "/mnt/toshiba_hdd/datasets/suim/TEST/images/w_r_43_.jpg",
+    "width": 640,
+    "height": 480,
+    "foreground_pct": 10.14
+  },
+  {
+    "name": "building",
+    "prompt": "building",
+    "dataset": "RUGD",
+    "image": "/mnt/toshiba_hdd/datasets/rugd/images/village/village_00553.png",
+    "width": 688,
+    "height": 550,
+    "foreground_pct": 37.65
+  },
+  {
+    "name": "dirt_road",
+    "prompt": "dirt road",
+    "dataset": "DeepScene",
+    "image": "/mnt/toshiba_hdd/datasets/deepscene/freiburg_forest_annotated/test/rgb/b15-6604_Clipped.jpg",
+    "width": 872,
+    "height": 485,
+    "foreground_pct": 11.91
+  }
+]

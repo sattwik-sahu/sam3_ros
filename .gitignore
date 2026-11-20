@@ -1,0 +1,31 @@
+# pixi environments
+.pixi/*
+!.pixi/config.toml
+
+# colcon
+build/
+install/
+log/
+
+# zensical
+site/
+.cache/
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ROS
+.ros/
+
+# secrets / local docker env
+.env
+
+# editors / OS
+.vscode/
+.idea/
+.DS_Store
