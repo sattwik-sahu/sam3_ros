@@ -1,5 +1,5 @@
 ---
-title: SAM 3 ROS
+title: Overview
 description: Text-prompted SAM 3 segmentation for ROS 2 — mono8 masks from an RGB image and a prompt.
 ---
 
